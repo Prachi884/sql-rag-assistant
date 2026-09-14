@@ -20,7 +20,7 @@ Built with **LangChain**, **Groq**, **Streamlit**, and **ChromaDB**.
 
 ## 🚀 Live Demo
 
-[Coming soon — deploy on Streamlit Cloud]
+[(https://prachi884-sql-rag-assistant-app-pn7hgv.streamlit.app/)]
 
 ## 🛠 Tech Stack
 
