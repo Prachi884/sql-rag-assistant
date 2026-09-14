@@ -37,7 +37,7 @@ if not os.getenv("GROQ_API_KEY"):
     )
 
 # Model config — using the free-tier-friendly model
-MODEL_NAME = "llama-3.1-8b-instant"
+MODEL_NAME = "groq/compound"
 TEMPERATURE = 0  # 0 = deterministic, best for SQL generation
 
 
