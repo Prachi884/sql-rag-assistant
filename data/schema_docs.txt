@@ -1,0 +1,95 @@
+# E-Commerce Database Schema Documentation
+
+This is a sample SQLite database for an online store. It tracks customers,
+the products available, orders placed by customers, and the individual
+line items inside each order.
+
+There are 4 tables. They connect like this:
+- A customer can place many orders (one-to-many).
+- An order belongs to exactly one customer.
+- An order contains one or more order_items.
+- Each order_item references exactly one product.
+- A product can appear in many order_items (one-to-many).
+
+
+## Table: customers
+Stores every person who signed up on the site.
+
+Columns:
+- id            : Unique customer ID (auto-incremented integer).
+- name          : Full name of the customer (e.g. "Aarav Sharma").
+- email         : Unique email address used at signup.
+- city          : City the customer lives in. Common values include
+                  Mumbai, Delhi, Bangalore, Hyderabad, Chennai, Kolkata,
+                  Pune, Ahmedabad, Jaipur, Lucknow, Kanpur, Nagpur,
+                  Indore, Thane.
+- signup_date   : Date the customer signed up, in YYYY-MM-DD format.
+
+
+## Table: products
+Stores every product available for sale in the store.
+
+Columns:
+- id            : Unique product ID (auto-incremented integer).
+- name          : Product name (e.g. "Laptop", "Wireless Mouse").
+- category      : Product category. Possible values:
+                  Electronics, Home, Furniture, Stationery.
+- price         : Selling price in Indian Rupees (INR), as a decimal.
+- stock         : Number of units currently in stock (integer).
+
+
+## Table: orders
+Stores one row per order placed by a customer.
+
+Columns:
+- id            : Unique order ID (auto-incremented integer).
+- customer_id   : The id of the customer who placed this order.
+                  References customers.id.
+- order_date    : Date the order was placed, in YYYY-MM-DD format.
+- total_amount  : Total order value in INR, computed as the sum of
+                  (quantity * price) across all order_items in this order.
+- status        : Current order status. Possible values:
+                  pending    - order placed, not yet processed
+                  shipped    - order dispatched, in transit
+                  delivered  - order completed, received by customer
+                  cancelled  - order was cancelled
+
+
+## Table: order_items
+Stores one row per product inside each order (the line items).
+
+Columns:
+- id            : Unique order item ID (auto-incremented integer).
+- order_id      : The id of the parent order. References orders.id.
+- product_id    : The id of the product purchased. References products.id.
+- quantity      : How many units of the product were ordered.
+- price         : Price per unit at the time of purchase, in INR.
+
+
+## Common Query Patterns
+
+To find total revenue:
+    SUM(orders.total_amount) where status = 'delivered'
+
+To find a customer's purchase history:
+    Join customers with orders on customers.id = orders.customer_id
+
+To find the most popular products:
+    Join order_items with products, group by product, order by SUM(quantity) DESC
+
+To find revenue by city:
+    Join customers with orders, group by customers.city
+
+To find revenue by category:
+    Join orders with order_items with products, group by products.category
+
+
+## Date Conventions
+- All dates are stored as text in YYYY-MM-DD format (ISO 8601).
+- order_date is in the past (between 1 and 365 days ago).
+- signup_date is between 2023-01-01 and roughly 2024-12-01.
+
+
+## Currency
+- All prices and totals are in Indian Rupees (INR).
+- "Revenue", "sales", "total amount" all refer to these INR values.
